@@ -1,163 +1,159 @@
 #include <iostream>
-#include <iomanip>
 #include <string>
 #include <vector>
+#include <map>
+#include <limits>
+using namespace std;
 
-int main()
-{
-    int foodnum[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};   // Number of food
-    int drinknum[] = {11, 12, 13, 14, 15};            // Number of drink
-    
-    std::string foodnames[] = {"Fries rice with fries chicken", "Fries rice with BBQ chicken", 
-    "Rice with fries chicken", "Rice with BBQ chicken", "Fries rice with fries pork",
-    "Fries rice with BBQ pork", "Rice with fries pork", "Rice with BBQ pork", 
-    "Pork kathiew", "Cow meat ball kathiew"};
-    std::string drinknames[] = {"Ice lemon green tea", "Ice lemon red tea", "Ice latte", 
-    "Ice americano", "Ice tea"};
+class Product{
+  public:
+   int ItemId;
+   double ItemPrice;
+   bool IsFood;
+   string FoodName;
+   Product(int _id, const string& _name, double _price, bool _isfood): ItemId(_id), FoodName(_name),ItemPrice(_price),IsFood(_isfood){}
+   Product(){
+    cout << "There Nothing\n";
+   }
+};
 
-    float foodprice[] = {5.00, 5.00, 4.50, 4.50, 5.00, 5.00, 4.50, 4.50, 3.00, 3.50};
-    float drinkprice[] = {2.00, 2.00, 1.60, 1.50, 0.50};
-    
-    // Variables to track orders
-    int options = -1;
-    int quantity = 0;
-    float total = 0.0;
+class Menu{
+  private:
+    map<int, Product> items;
+  public:
+    void addItemToList(const Product& item){
+      items.emplace(item.ItemId, item);
+    }
+    bool removeItemFromList(int ItemId) {
+        return items.erase(ItemId) > 0;
+    }
+    const Product* getItemById(int ItemId) const{
+      auto it = items.find(ItemId);
+      if (it != items.end()){
+        return &it->second;
+      }
+      return nullptr;
+    }
 
-    // Vectors to track orders details
-    std::vector<std::string> orderedItems;    // Stores the names of ordered items
-    std::vector<int> orderedQuantities; // Stores the quantities ordered
-    std::vector<float> orderedPrices;   // Stores the prices of ordered items
+    void DisplayMenu() const{
+      cout << "Menu\n";
+      for (const auto& pair : items) {
+        cout << "ID: " << pair.second.ItemId << " | Name: " << pair.second.FoodName << " | Price: $" << pair.second.ItemPrice << " | Type: " << (pair.second.IsFood ? "Food" : "Drink") << endl;
+        }
+    }
+};
 
-    while (true) 
-    {
-        system("cls");
-        std::cout << "=================================================\n";
-        std::cout << "                 Jing Breakfast                  \n";
-        std::cout << "=================================================\n";
-        std::cout << "                      Food                       \n";
-        std::cout << "-------------------------------------------------\n";
-        std::cout << "ID\tFood Name\t\t\tPrice\n";
-        std::cout << "-------------------------------------------------\n";
+class MenuAdmin{
+  private:
+    Menu& TargetMenu;
+  public:
+    MenuAdmin(Menu& MenuToManage): TargetMenu(MenuToManage){}
+    void addItemToMenu(int id, const string& name, double price, bool isFood) {
+        Product newItem(id, name, price, isFood);
+        TargetMenu.addItemToList(newItem);
+        cout << "Added item: " << name << " (ID: " << id << ") to the menu." << endl;
+    }
+    void removeMenuItem(int id) {
+        if (TargetMenu.removeItemFromList(id)) {
+            cout << "Removed item with ID " << id << " from the menu." << endl;
+        } else {
+            cout << "Error: Item with ID " << id << " not found." << endl;
+        }
+    }
+};
+
+class Order{
+  private:
+    map<int, int> orderedItems;
+    const Menu& menu;
+  public:
+    Order(const Menu& _menu): menu(_menu){}
+
+    void AddItemToOrder(int id, int quantity){  
+      if (quantity <= 0) {
+          cout << "Error: Quantity must be a positive number." << endl;
+          return;
+      }
+
+      const Product* item = menu.getItemById(id);
         
-        // Display ID FoodName Price
-        for (int food = 0; food < 10; ++food) 
-        {
-            std::cout << foodnum[food] << "\t" << std::setw(30) << std::left << foodnames[food] 
-            << "\t$" << std::fixed << std::setprecision(2) << foodprice[food] << std::endl;
-        }
-
-        std::cout << "-------------------------------------------------\n";
-        std::cout << "                   Drinks                        \n";
-        std::cout << "-------------------------------------------------\n";
-        std::cout << "ID\tDrink Name\t\t\tPrice\n";
-        std::cout << "-------------------------------------------------\n";
-
-        // Display ID DrinkName Price
-        for (int drink = 0; drink < 5; ++drink) 
-        {
-            std::cout << drinknum[drink] << "\t" << std::setw(30) << std::left << drinknames[drink] 
-            << "\t$" << std::fixed << std::setprecision(2) << drinkprice[drink] << std::endl;
-        }
-
-        std::cout << " 0\tExit\n";
-        std::cout << "=================================================\n";
-        std::cout << "Enter Food or Drink ID you want to order: ";
-        std::cin >> options;
-
-        if (std::cin.fail()) // Check if the input is invalid
-        {
-            std::cin.clear(); // Clear the error state of cin
-            std::cin.ignore(100, '\n'); // Ignore leftover invalid input
-            std::cout << "Invalid input. Please try again.\n";
-            system("pause");
-            continue; // Restart the loop
-        }
-
-        // Exit if the user chooses 0
-        if (options == 0) 
-        {break;}
-
-        if (options < 1 || options > 15) 
-        {   
-            std::cout << "Invalid ID. Please try again.\n";
-            system("pause");
-            continue;
-        }
-
-        // Get the quantity
-        std::cout << "Enter the quantity: ";
-        std::cin >> quantity;
-
-        if (std::cin.fail()) // Check if the input is invalid
-        {
-            std::cin.clear(); // Clear the error state of cin
-            std::cin.ignore(100, '\n'); // Ignore leftover invalid input
-            std::cout << "Invalid input. Please try again.\n";
-            system("pause");
-            continue; // Restart the loop
-        }
-
-        if (quantity < 1) 
-        {
-            std::cout << "Invalid quantity. Please try again.\n";
-            system("pause");
-            continue;
-        }
-
-                 // Calculate the food price and store the order details for later use
-                 if (options >= 1 && options <= 10)  // Food IDs
-                 {   
-                 float price = foodprice[options - 1] * quantity;
-                 total += price;
-
-                 // Add details to vectors for final bill summary
-                 orderedItems.push_back(foodnames[options - 1]);
-                 orderedQuantities.push_back(quantity);
-                 orderedPrices.push_back(price);
-            
-                 std::cout << quantity << " x " << foodnames[options - 1] << " added to your order. ";
-                 std::cout << "Subtotal: $" << std::fixed << std::setprecision(2) << total << std::endl;
-                 } 
-                 
-                 // Calculate the drink price and store the order details for later use
-                 else if (options >= 11 && options <= 15)  // Drink IDs
-                 {
-                 float price = drinkprice[options - 11] * quantity;
-                 total += price;
-                 
-                 // Add details to vectors for final bill summary
-                 orderedItems.push_back(drinknames[options - 11]);
-                 orderedQuantities.push_back(quantity);
-                 orderedPrices.push_back(price);
-
-                 std::cout << quantity << " x " << drinknames[options - 11] << " added to your order. ";
-                 std::cout << "Subtotal: $" << std::fixed << std::setprecision(2) << total << std::endl;
-                 }
-
-        system("pause"); // Pause to let the user see the output
+      if (item != nullptr) {
+        orderedItems[id] += quantity;
+        cout << "Added " << quantity << "x " << item->FoodName << " to the order." << endl;
+      } 
+      else {
+        cout << "Error: Item with ID " << id << " not found on the menu." << endl;
+      }
     }
 
-    // Display the final bill summary
-    system("cls");
-    std::cout << "=======================================================\n";
-    std::cout << "|                   Final Bill Summary                |\n";
-    std::cout << "|=====================================================|\n";
-    std::cout << "| Item                          | Quantity |  Price   |\n";
-    std::cout << "|-----------------------------------------------------|\n";
-
-    // Loop through the ordered items and display them
-    for (size_t i = 0; i < orderedItems.size(), i < orderedQuantities.size(), i < orderedPrices.size(); ++i)
-    {
-        std::cout << "| " << std::setw(29) << std::left << orderedItems[i] << " | " 
-             << std::setw(8) << std::right << orderedQuantities[i] << " | $ "
-             << std::setw(6) << std::fixed << std::setprecision(2) << orderedPrices[i] << " |\n";
+    void RemoveItemFromOrder(int id, int quantity){
+      auto it = orderedItems.find(id);
+      if (it == orderedItems.end()){
+        cout << "Error: Item with ID " << id << " was not in the order." << endl;
+        return;
+      }
+      if (quantity <= 0){
+        cout << "Error: Quantity to remove must be a positive number." << endl;
+        return;  
+      }
+      int& currentQuantity = it->second;
+      if (quantity == 1){
+         orderedItems.erase(id);
+         cout << "Item has been remove." << endl;
+      }
+      if (quantity >= currentQuantity) {
+            orderedItems.erase(id);
+            cout << "Removed all " << currentQuantity << "x " << menu.getItemById(id)->FoodName << " (ID: " << id << ") from the order." << endl;
+        } else {
+            currentQuantity -= quantity;
+            cout << "Removed " << quantity << "x " << menu.getItemById(id)->FoodName << " (ID: " << id << "from the order." << endl;
+        }
     }
 
-    std::cout << "|=====================================================|\n";
-    std::cout << "|                                    Total | $ " << std::setw(6) 
-         << std::fixed << std::setprecision(2) << total << " |\n";
-    std::cout << "=======================================================\n";
-    std::cout << "Thank you for visiting Jing Breakfast!\n";
+    void generateReceipt(){
+      if (orderedItems.empty()) {
+        cout << "\nOrder is empty. Nothing to print on receipt." << endl;
+        return;
+      }
 
-    return 0;
+      cout << "\n--- RECEIPT ---" << endl;
+        double subtotal = 0.0;
+
+      for (const auto& pair : orderedItems) {
+        int id = pair.first;
+        int quantity = pair.second;
+
+        const Product* item = menu.getItemById(id);
+
+            if (item != nullptr) {
+                double itemTotal = item->ItemPrice * quantity;
+                cout << quantity << "x " << item->FoodName << " @ $" << item->ItemPrice << " = $" << itemTotal << endl;
+                subtotal += itemTotal;
+            }
+        }
+    }
+};
+
+int getIntegerInput(const string& prompt) {
+  int value;
+  cout << prompt;
+  while (!(cin >> value)) {
+    cout << "Invalid input. Please enter a number: ";
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  }
+  return value;
+}
+
+int main(){
+  Menu myMenu;
+  MenuAdmin menuManage(myMenu);
+  Order myOrder(myMenu);
+
+  int choise;
+  do{
+
+  }while(choise == 15);
+
+ 
 }
