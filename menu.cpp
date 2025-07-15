@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <cctype> 
 #include <limits>
 using namespace std;
 
@@ -145,15 +147,129 @@ int getIntegerInput(const string& prompt) {
   return value;
 }
 
+string getStringInput(const string& prompt) {
+  string value;
+  cout << prompt;
+  cin.clear();
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  getline(cin, value);
+  return value;
+}
+
+double getDoubleInput(const string& prompt) {
+  double value;
+  cout << prompt;
+  while (!(cin >> value)) {
+    cout << "Invalid input. Please enter a number: ";
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  }
+  return value;
+}
+
+bool getBoolInput(const string& prompt) {
+    string input;
+    bool isValidInput = false;
+    bool result = false;
+
+    while (!isValidInput) {
+        cout << prompt;
+        cin >> input;
+
+        transform(input.begin(), input.end(), input.begin(),
+                       [](unsigned char c){ return tolower(c); });
+
+        if (input == "food") {
+            result = true;
+            isValidInput = true;
+        } else if (input == "drink") {
+            result = false;
+            isValidInput = true;
+        } else {
+            cout << "Invalid input. Please enter 'Food' or 'Drink'.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+    return result;
+}
+
 int main(){
+
+  // Menu myMenu;
+  // MenuAdmin menuManage(myMenu);
+
+  // menuManage.addItemToMenu(10,"MEAT",9.20,true);
+  // menuManage.addItemToMenu(10,"DRINK",10.20,false);
+  // myMenu.DisplayMenu();
+  int TempId;
+  string TempName;
+  double TempPrice;
+  bool TempIsFood;
+  int Quanity;
+  int choice;
+  bool StartingLoop = true;
+  bool OrderingLoop = true;
+  bool MenuAdminLoop = true;
   Menu myMenu;
   MenuAdmin menuManage(myMenu);
   Order myOrder(myMenu);
 
-  int choise;
-  do{
+  menuManage.addItemToMenu(10,"MEAT",9.20,true); //this just add some item to the menu
+  menuManage.addItemToMenu(11,"DRINK",10.20,false);
 
-  }while(choise == 15);
+  system("cls");
+  do{
+    cout << "1 to Enter Ordering" << endl;
+    cout << "2 to Enter Menu Manangment" << endl;
+    cout << "3 to Exit"<< endl;
+    choice = getIntegerInput("Enter your choice: ");
+    if (choice == 1){
+      do{
+        myMenu.DisplayMenu();
+        cout << "1. To Start Ordering" << endl;
+        cout << "2. To Remove Item Order List" << endl;
+        cout << "3. To Fisish Ordering" << endl;
+        choice = getIntegerInput("Enter your choice: ");
+        if (choice == 1){
+          choice = getIntegerInput("Enter your Food Id choice: ");
+          Quanity = getIntegerInput("How Many Do You Want?: ");
+          myOrder.AddItemToOrder(choice,Quanity);
+        }else if(choice == 2){
+          choice = getIntegerInput("Enter your Food Id choice: ");
+          Quanity = getIntegerInput("How Many Do You Want Gone?: ");
+          myOrder.RemoveItemFromOrder(choice,Quanity);
+        }else {
+          OrderingLoop = false;
+        }
+      }while (OrderingLoop);
+      OrderingLoop = true; 
+    }else if(choice == 2){
+      do{
+        myMenu.DisplayMenu();
+        cout << "1. To Add Item to Menu" << endl;
+        cout << "2. To Remove Item from Menu" << endl;
+        cout << "3. To Exit Menu Management" << endl;
+        choice = getIntegerInput("Enter your choice: ");
+        if (choice == 1){
+          TempId = getIntegerInput("Enter The Food Id: ");
+          TempName = getStringInput("Enter The Item's Name: ");
+          TempPrice = getDoubleInput("Enter The Price: ");
+          TempIsFood = getBoolInput("Enter If The Item is a Food Or Drink: ");
+          menuManage.addItemToMenu(TempId,TempName,TempPrice,TempIsFood);
+          system("cls");
+        }else if(choice == 2){
+          choice = getIntegerInput("Enter your Food Id choice: ");
+          Quanity = getIntegerInput("How Many Do You Want Gone?: ");
+          myOrder.RemoveItemFromOrder(choice,Quanity);
+        }else {
+          MenuAdminLoop = false;
+        }
+      }while (MenuAdminLoop);
+      MenuAdminLoop = true;  
+    }
+      
+  }while(StartingLoop);
 
  
 }
