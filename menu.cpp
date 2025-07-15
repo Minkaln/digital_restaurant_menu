@@ -5,10 +5,12 @@
 #include <algorithm>
 #include <cctype> 
 #include <limits>
+#include <fstream>
 using namespace std;
 
-class Product{
-  public:
+class Product
+{
+ public:
    int ItemId;
    double ItemPrice;
    bool IsFood;
