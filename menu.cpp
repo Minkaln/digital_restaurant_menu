@@ -7,6 +7,7 @@
 #include <limits>    
 #include <iomanip>   
 #include <cstdlib>   
+#include <fstream>   
 
 using namespace std;
 
@@ -75,7 +76,6 @@ public:
     bool IsFood;
     string FoodName;
 
-
     Product(int _id, const string& _name, double _price, bool _isfood)
         : ItemId(_id), FoodName(_name), ItemPrice(_price), IsFood(_isfood) {}
 
@@ -85,14 +85,85 @@ public:
 class Menu {
 private:
     map<int, Product> items;
+    const string filename = "menu_data.txt"; 
+
 public:
+    Menu() {
+        loadMenuFromFile(); 
+    }
+
+    ~Menu() {
+        saveMenuToFile(); 
+    }
+
+    void loadMenuFromFile() {
+        ifstream inFile(filename);
+        if (!inFile.is_open()) {
+            cout << "No existing menu data file found. Starting with an empty menu or initial default items.\n";
+            return;
+        }
+
+        items.clear(); 
+
+        string line;
+        while (getline(inFile, line)) {
+            size_t firstPipe = line.find('|');
+            size_t secondPipe = line.find('|', firstPipe + 1);
+            size_t thirdPipe = line.find('|', secondPipe + 1);
+
+            if (firstPipe == string::npos || secondPipe == string::npos || thirdPipe == string::npos) {
+                cerr << "Warning: Skipping malformed line in menu data: " << line << endl;
+                continue;
+            }
+
+            try {
+                int id = stoi(line.substr(0, firstPipe));
+                string name = line.substr(firstPipe + 1, secondPipe - (firstPipe + 1));
+                double price = stod(line.substr(secondPipe + 1, thirdPipe - (secondPipe + 1)));
+                bool isFood = (stoi(line.substr(thirdPipe + 1)) == 1);
+
+                items.emplace(id, Product(id, name, price, isFood));
+            } catch (const exception& e) {
+                cerr << "Error parsing line: '" << line << "' - " << e.what() << endl;
+            }
+        }
+        inFile.close();
+        cout << "Menu loaded from " << filename << ".\n";
+    }
+
+    void saveMenuToFile() const {
+        ofstream outFile(filename);
+        if (!outFile.is_open()) {
+            cerr << "Error: Could not open " << filename << " for writing. Menu data not saved.\n";
+            return;
+        }
+
+        for (const auto& pair : items) {
+            const Product& item = pair.second;
+            outFile << item.ItemId << "|"
+                    << item.FoodName << "|"
+                    << fixed << setprecision(2) << item.ItemPrice << "|"
+                    << (item.IsFood ? 1 : 0) << "\n";
+        }
+        outFile.close();
+        cout << "Menu saved to " << filename << ".\n";
+    }
+
+
     bool addItemToList(const Product& item) {
         auto [it, inserted] = items.try_emplace(item.ItemId, item);
-        return inserted; 
+        if (inserted) {
+            saveMenuToFile(); 
+        }
+        return inserted;
     }
 
     bool removeItemFromList(int ItemId) {
-        return items.erase(ItemId) > 0; 
+        bool removed = items.erase(ItemId) > 0;
+        if (removed) {
+            saveMenuToFile(); 
+        }
+        return removed;
     }
 
     const Product* getItemById(int ItemId) const {
@@ -104,11 +175,11 @@ public:
     }
 
     void DisplayMenu() const {
-        system("cls");
+        system("cls"); 
         cout << "=================================================\n";
         cout << "                 Jing Breakfast Menu             \n";
         cout << "=================================================\n";
-        
+
         if (items.empty()) {
             cout << "Menu is currently empty.\n";
             cout << "=================================================\n";
@@ -157,7 +228,6 @@ public:
     }
 };
 
-
 class Order {
 private:
     map<int, int> orderedItems; 
@@ -196,9 +266,9 @@ public:
         }
 
         int& currentQuantity = it->second;
-        const Product* item = menu.getItemById(id);
+        const Product* item = menu.getItemById(id); 
 
-        if (item == nullptr) {
+        if (item == nullptr) { 
             cout << "Error: Product details for ID " << id << " not found in menu (unexpected)." << endl;
             orderedItems.erase(id);
             return;
@@ -216,10 +286,11 @@ public:
     }
 
     void DisplayCurrentOrder() const {
+        cout << "\n";
         cout << "==================================================================\n";
         cout << "                      Current Order Summary                       \n";
         cout << "==================================================================\n";
-        
+
         if (orderedItems.empty()) {
             cout << "No items in the order.\n";
             cout << "==================================================================\n";
@@ -255,7 +326,7 @@ public:
         cout << "==================================================================\n";
         cout << "                       Final Bill Summary                         \n";
         cout << "==================================================================\n";
-        
+
         if (orderedItems.empty()) {
             cout << "Order is empty. No receipt to print." << endl;
             cout << "==================================================================\n";
@@ -289,27 +360,28 @@ public:
 };
 
 int main() {
-    system("cls");
+    system("cls"); 
 
-    Menu myMenu;
+    Menu myMenu; 
     MenuAdmin menuManage(myMenu);
     Order myOrder(myMenu);
 
-    menuManage.addItemToMenu(1, "Fries rice with fries chicken", 5.00, true);
-    menuManage.addItemToMenu(2, "Fries rice with BBQ chicken", 5.00, true);
-    menuManage.addItemToMenu(3, "Rice with fries chicken", 4.50, true);
-    menuManage.addItemToMenu(4, "Rice with BBQ chicken", 4.50, true);
-    menuManage.addItemToMenu(5, "Fries rice with fries pork", 5.00, true);
-    menuManage.addItemToMenu(6, "Fries rice with BBQ pork", 5.00, true);
-    menuManage.addItemToMenu(7, "Rice with fries pork", 4.50, true);
-    menuManage.addItemToMenu(8, "Rice with BBQ pork", 4.50, true);
-    menuManage.addItemToMenu(9, "Pork kathiew", 3.00, true);
-    menuManage.addItemToMenu(10, "Cow meat ball kathiew", 3.50, true);
-    menuManage.addItemToMenu(11, "Ice lemon green tea", 2.00, false);
-    menuManage.addItemToMenu(12, "Ice lemon red tea", 2.00, false);
-    menuManage.addItemToMenu(13, "Ice latte", 1.60, false);
-    menuManage.addItemToMenu(14, "Ice americano", 1.50, false);
-    menuManage.addItemToMenu(15, "Ice tea", 0.50, false);
+    // This is just for add data to menu. so u can uncommand it
+    // menuManage.addItemToMenu(1, "Fries rice with fries chicken", 5.00, true);
+    // menuManage.addItemToMenu(2, "Fries rice with BBQ chicken", 5.00, true);
+    // menuManage.addItemToMenu(3, "Rice with fries chicken", 4.50, true);
+    // menuManage.addItemToMenu(4, "Rice with BBQ chicken", 4.50, true);
+    // menuManage.addItemToMenu(5, "Fries rice with fries pork", 5.00, true);
+    // menuManage.addItemToMenu(6, "Fries rice with BBQ pork", 5.00, true);
+    // menuManage.addItemToMenu(7, "Rice with fries pork", 4.50, true);
+    // menuManage.addItemToMenu(8, "Rice with BBQ pork", 4.50, true);
+    // menuManage.addItemToMenu(9, "Pork kathiew", 3.00, true);
+    // menuManage.addItemToMenu(10, "Cow meat ball kathiew", 3.50, true);
+    // menuManage.addItemToMenu(11, "Ice lemon green tea", 2.00, false);
+    // menuManage.addItemToMenu(12, "Ice lemon red tea", 2.00, false);
+    // menuManage.addItemToMenu(13, "Ice latte", 1.60, false);
+    // menuManage.addItemToMenu(14, "Ice americano", 1.50, false);
+    // menuManage.addItemToMenu(15, "Ice tea", 0.50, false);
 
     int choice;
     bool startingLoop = true;
