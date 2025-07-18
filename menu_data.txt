@@ -1,0 +1,15 @@
+1|Fries rice with fries chicken|5.00|1
+2|Fries rice with BBQ chicken|5.00|1
+3|Rice with fries chicken|4.50|1
+4|Rice with BBQ chicken|4.50|1
+5|Fries rice with fries pork|5.00|1
+6|Fries rice with BBQ pork|5.00|1
+7|Rice with fries pork|4.50|1
+8|Rice with BBQ pork|4.50|1
+9|Pork kathiew|3.00|1
+10|The Red|5.00|1
+11|Ice lemon green tea|2.00|0
+12|Ice lemon red tea|2.00|0
+13|Ice latte|1.60|0
+14|Ice americano|1.50|0
+15|Ice tea|0.50|0
