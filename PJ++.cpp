@@ -56,7 +56,7 @@ public:
             if (cin.fail() || id < 1) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -84,28 +84,28 @@ public:
             if (cin.fail()) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
             }
 
-            int type;
+            string type = "food"; "drink";
 
-            cout << "Is this a (1) Food or (2) Drink?: ";
+            cout << "Is this a Food or Drink?: ";
             cin >> type;
 
-            MenuItem newItem(id, name, price);
+            MenuItem NewItem(id, name, price);
 
-            if (type == 1)
+            if (type == "food")
             {
-                FoodMenu.push_back(newItem);
+                FoodMenu.push_back(NewItem);
                 cout << "Food item added successfully!\n";
             }
 
-            else if (type == 2)
+            else if (type == "drink")
             {
-                DrinkMenu.push_back(newItem);
+                DrinkMenu.push_back(NewItem);
                 cout << "Drink item added successfully!\n";
             }
 
@@ -192,7 +192,7 @@ public:
             if (cin.fail() || MenuManagementOptions < 1 || MenuManagementOptions > 3) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -227,7 +227,7 @@ public:
             if (cin.fail() || welcome < 1 || welcome >= 3) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -309,20 +309,22 @@ public:
                 system("pause");
                 return;
             }
-            cout << "0 to Back\n" << "99 To Contiues\n";
+
+            cout << "0 to Back\n" << "168 To Contiues\n";
             cout << "Enter Food/Drink ID: ";
+
             cin >> IteamID;
 
             if (IteamID == 0)
             break;
 
-            if (IteamID == 99)
+            if (IteamID == 168)
             {ACC();}
             
             if (cin.fail() || IteamID < 0) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -338,7 +340,7 @@ public:
             if (cin.fail() || quantity <= 0) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid quantity. Try again.\n";
                 system("pause");
                 continue;
@@ -372,7 +374,7 @@ public:
             if (cin.fail() || choice < 0 || choice > 3) 
             {
                 cin.clear();
-                cin.ignore(100, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -397,7 +399,7 @@ public:
             }
         }
     }
-
+    
     void DisplayCurrentOrder() 
     {
         system("cls");
@@ -430,7 +432,6 @@ public:
         {
             cout << "No items in the order to cancel.\n";
             system("pause");
-
             return;
         }
 
@@ -445,10 +446,9 @@ public:
         if (cin.fail() || CancelID < 1)
         {
             cin.clear();
-            cin.ignore(100, '\n');
+            cin.ignore(10000000000, '\n');
             cout << "Invalid ID. Try again.\n";
             system("pause");
-            
             return;
         }
 

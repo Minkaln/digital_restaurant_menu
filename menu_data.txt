@@ -1,5 +1,4 @@
 1|Fries rice with fries chicken|5.00|1
-2|Fries rice with BBQ chicken|5.00|1
 3|Rice with fries chicken|4.50|1
 4|Rice with BBQ chicken|4.50|1
 5|Fries rice with fries pork|5.00|1
