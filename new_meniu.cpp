@@ -386,51 +386,87 @@ int main() {
     int choice;
     bool startingLoop = true;
 
-    do {
-        cout << "\n--- Welcome to Jing Breakfast Ordering System ---\n";
-        cout << "1. Place a New Order\n";
-        cout << "2. Manage Menu (Admin)\n";
-        cout << "3. Exit Application\n";
-        choice = getIntegerInput("Enter your choice: ");
+    // do {
+    //     cout << "\n--- Welcome to Jing Breakfast Ordering System ---\n";
+    //     cout << "1. Place a New Order\n";
+    //     cout << "2. Manage Menu (Admin)\n";
+    //     cout << "3. Exit Application\n";
+    //     choice = getIntegerInput("Enter your choice: ");
 
-        system("cls");
+    //     system("cls");
 
-        if (choice == 1) {
-            bool orderingLoop = true;
-            do {
-                myMenu.DisplayMenu();
-                myOrder.DisplayCurrentOrder();
-                cout << "\n--- Ordering Options ---\n";
-                cout << "1. Add Item to Order\n";
-                cout << "2. Remove Item from Order\n";
-                cout << "3. Finalize Order and Print Receipt\n";
-                cout << "4. Back to Main Menu\n";
-                choice = getIntegerInput("Enter your choice: ");
+    //     if (choice == 1) {
+    //         bool orderingLoop = true;
+    //         do {
+    //             myMenu.DisplayMenu();
+    //             myOrder.DisplayCurrentOrder();
+    //             cout << "\n--- Ordering Options ---\n";
+    //             cout << "1. Add Item to Order\n";
+    //             cout << "2. Remove Item from Order\n";
+    //             cout << "3. Finalize Order and Print Receipt\n";
+    //             cout << "4. Back to Main Menu\n";
+    //             choice = getIntegerInput("Enter your choice: ");
 
-                if (choice == 1) {
-                    int itemId = getIntegerInput("Enter Item ID to add: ");
-                    int quantity = getIntegerInput("Enter quantity: ");
-                    myOrder.AddItemToOrder(itemId, quantity);
-                } else if (choice == 2) {
-                    int itemId = getIntegerInput("Enter Item ID to remove: ");
-                    int quantity = getIntegerInput("Enter quantity to remove: ");
-                    myOrder.RemoveItemFromOrder(itemId, quantity);
-                } else if (choice == 3) {
-                    myOrder.generateReceipt();
-                    cout << "\nOrder finalized. Thank you for your business!\n";
-                    system("pause");
-                    orderingLoop = false;
-                } else if (choice == 4) {
-                    orderingLoop = false;
-                } else {
-                    cout << "Invalid choice. Please try again.\n";
-                }
-                system("pause");
-                system("cls");
-            } while (orderingLoop);
-            system("cls");
-        } else if (choice == 2) {
-            bool menuAdminLoop = true;
+    //             if (choice == 1) {
+    //                 int itemId = getIntegerInput("Enter Item ID to add: ");
+    //                 int quantity = getIntegerInput("Enter quantity: ");
+    //                 myOrder.AddItemToOrder(itemId, quantity);
+    //             } else if (choice == 2) {
+    //                 int itemId = getIntegerInput("Enter Item ID to remove: ");
+    //                 int quantity = getIntegerInput("Enter quantity to remove: ");
+    //                 myOrder.RemoveItemFromOrder(itemId, quantity);
+    //             } else if (choice == 3) {
+    //                 myOrder.generateReceipt();
+    //                 cout << "\nOrder finalized. Thank you for your business!\n";
+    //                 system("pause");
+    //                 orderingLoop = false;
+    //             } else if (choice == 4) {
+    //                 orderingLoop = false;
+    //             } else {
+    //                 cout << "Invalid choice. Please try again.\n";
+    //             }
+    //             system("pause");
+    //             system("cls");
+    //         } while (orderingLoop);
+    //         system("cls");
+    //     } else if (choice == 2) {
+    //         bool menuAdminLoop = true;
+    //         do {
+    //             myMenu.DisplayMenu();
+    //             cout << "\n--- Menu Management Options ---\n";
+    //             cout << "1. Add New Item to Menu\n";
+    //             cout << "2. Remove Item from Menu\n";
+    //             cout << "3. Back to Main Menu\n";
+    //             choice = getIntegerInput("Enter your choice: ");
+
+    //             if (choice == 1) {
+    //                 int tempId = getIntegerInput("Enter The Item ID (must be unique): ");
+    //                 string tempName = getStringInput("Enter The Item's Name: ");
+    //                 double tempPrice = getDoubleInput("Enter The Price: ");
+    //                 bool tempIsFood = getFoodDrinkChoice("Is The Item a 'food' or 'drink'?: ");
+    //                 menuManage.addItemToMenu(tempId, tempName, tempPrice, tempIsFood);
+    //             } else if (choice == 2) {
+    //                 int tempId = getIntegerInput("Enter The Item ID to remove: ");
+    //                 menuManage.removeMenuItem(tempId);
+    //             } else if (choice == 3) {
+    //                 menuAdminLoop = false;
+    //             } else {
+    //                 cout << "Invalid choice. Please try again.\n";
+    //             }
+    //             system("pause");
+    //             system("cls");
+    //         } while (menuAdminLoop);
+    //         system("cls");
+    //     } else if (choice == 3) {
+    //         startingLoop = false;
+    //         cout << "Exiting. Goodbye!\n";
+    //     } else {
+    //         cout << "Invalid choice. Please try again.\n";
+    //         system("pause");
+    //         system("cls");
+    //     }
+    // } while (startingLoop);
+  bool menuAdminLoop = true;
             do {
                 myMenu.DisplayMenu();
                 cout << "\n--- Menu Management Options ---\n";
@@ -457,15 +493,5 @@ int main() {
                 system("cls");
             } while (menuAdminLoop);
             system("cls");
-        } else if (choice == 3) {
-            startingLoop = false;
-            cout << "Exiting. Goodbye!\n";
-        } else {
-            cout << "Invalid choice. Please try again.\n";
-            system("pause");
-            system("cls");
-        }
-    } while (startingLoop);
-
     return 0;
 }
