@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/UI/project/Y1_S2/CS_126/important_assignment/digital_restaurant_menu",
-      "program": "d:/UI/project/Y1_S2/CS_126/important_assignment/digital_restaurant_menu/build/Debug/outDebug",
+      "cwd": "c:/Users/U-ser/Downloads/Telegram Desktop",
+      "program": "c:/Users/U-ser/Downloads/Telegram Desktop/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

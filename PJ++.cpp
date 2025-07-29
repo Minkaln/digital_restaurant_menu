@@ -18,7 +18,7 @@ public:
 class OrderItem 
 {
 public:
-    MenuItem item;
+    MenuItem item;  
     int quantity;
 
     OrderItem(MenuItem item, int quantity) : item(item), quantity(quantity) {}
@@ -36,8 +36,27 @@ private:
     float totalBill = 0.0;
 
 public:
+    RestaurantOrderingSystem() 
+    {
+        FoodMenu.push_back(MenuItem(1, "Fries rice with fries chicken", 5.00));
+        FoodMenu.push_back(MenuItem(2, "Fries rice with BBQ chicken", 5.00));
+        FoodMenu.push_back(MenuItem(3, "Rice with fries chicken", 4.50));
+        FoodMenu.push_back(MenuItem(4, "Rice with BBQ chicken", 4.50));
+        FoodMenu.push_back(MenuItem(5, "Fries rice with fries pork", 5.00));
+        FoodMenu.push_back(MenuItem(6, "Fries rice with BBQ pork", 5.00));
+        FoodMenu.push_back(MenuItem(7, "Rice with fries pork", 4.50));
+        FoodMenu.push_back(MenuItem(8, "Rice with BBQ pork", 4.50));
+        FoodMenu.push_back(MenuItem(9, "Pork kathiew", 3.00));
+        FoodMenu.push_back(MenuItem(10, "Cow meat ball kathiew", 3.50));
 
-    void AddIteam()
+        DrinkMenu.push_back(MenuItem(11, "Ice lemon green tea", 2.00));
+        DrinkMenu.push_back(MenuItem(12, "Ice lemon red tea", 2.00));
+        DrinkMenu.push_back(MenuItem(13, "Ice latte", 1.60));
+        DrinkMenu.push_back(MenuItem(14, "Ice americano", 1.50));
+        DrinkMenu.push_back(MenuItem(15, "Ice tea", 0.50));
+    }
+
+    void AddItem()
     {
         while (true)
         {
@@ -56,7 +75,7 @@ public:
             if (cin.fail() || id < 1) 
             {
                 cin.clear();
-                cin.ignore(10000, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -84,13 +103,13 @@ public:
             if (cin.fail()) 
             {
                 cin.clear();
-                cin.ignore(1000, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
             }
 
-            string type = "food"; "drink";
+            string type;
 
             cout << "Is this a Food or Drink?: ";
             cin >> type;
@@ -125,14 +144,14 @@ public:
 
             DisplayMenu();
 
-            int id;
-
             if (FoodMenu.empty() && DrinkMenu.empty()) 
             {
                 cout << "No items in the order to cancel.\n";
                 system("pause");
                 return;
             }
+
+            int id;
 
             cout << "Enter the ID of the item to remove: ";
             cin >> id;
@@ -164,10 +183,9 @@ public:
             if (!found)
             {
                 cout << "Item with ID " << id << " not found.\n";
-
-                system("pause");
-                break;
             }
+            system("pause");
+            break;
         }
     }
 
@@ -192,19 +210,19 @@ public:
             if (cin.fail() || MenuManagementOptions < 1 || MenuManagementOptions > 3) 
             {
                 cin.clear();
-                cin.ignore(1000, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
             }
 
             if (MenuManagementOptions == 1)
-            {AddIteam();}
+            {AddItem();}
 
-            if (MenuManagementOptions == 2)
+            else if (MenuManagementOptions == 2)
             {RemoveItem();}
 
-            if (MenuManagementOptions == 3)
+            else if (MenuManagementOptions == 3)
             break;
         }
     }
@@ -224,10 +242,10 @@ public:
             cout << "Enter your choice: ";
             cin >> welcome;
 
-            if (cin.fail() || welcome < 1 || welcome >= 3) 
+            if (cin.fail() || welcome < 1 || welcome > 2) 
             {
                 cin.clear();
-                cin.ignore(10000, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
@@ -236,7 +254,7 @@ public:
             if (welcome == 1)
             {TakeOrder();}
 
-            if (welcome == 2)
+            else if (welcome == 2)
             {ManageMenu();}
         }
     }
@@ -297,8 +315,6 @@ public:
 
     void TakeOrder() 
     {
-        int IteamID = -1;
-
         while (true) 
         {
             DisplayMenu();
@@ -310,37 +326,46 @@ public:
                 return;
             }
 
-            cout << "0 to Back\n" << "168 To Contiues\n";
+            cout << "0 to Back\n" << "168 To Continue\n";
             cout << "Enter Food/Drink ID: ";
 
+            int IteamID;
             cin >> IteamID;
+
+            if (cin.fail()) 
+            {
+                cin.clear();
+                cin.ignore(10000000000, '\n');
+                cout << "Invalid input. Try again.\n";
+                system("pause");
+                continue;
+            }
 
             if (IteamID == 0)
             break;
 
             if (IteamID == 168)
-            {ACC();}
-            
-            if (cin.fail() || IteamID < 0) 
             {
-                cin.clear();
-                cin.ignore(10000, '\n');
-                cout << "Invalid input. Try again.\n";
+                ACC();
+                continue;
+            }
+            
+            MenuItem* item = FindItemById(IteamID);
+            if (item == nullptr) 
+            {
+                cout << "Item with ID " << IteamID << " not found. Please try again.\n";
                 system("pause");
                 continue;
-            } 
-
-            MenuItem* item = FindItemById(IteamID);
+            }
 
             int quantity;
-
             cout << "Enter quantity: ";
             cin >> quantity;
 
             if (cin.fail() || quantity <= 0) 
             {
                 cin.clear();
-                cin.ignore(10000, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid quantity. Try again.\n";
                 system("pause");
                 continue;
@@ -364,29 +389,31 @@ public:
 
             cout << "1. Add more items\n";
             cout << "2. Cancel an item\n";
-            cout << "3 to Checkout\n";
+            cout << "3. Checkout\n";
 
             int choice;
 
             cout << "Choice: ";
             cin >> choice;
 
-            if (cin.fail() || choice < 0 || choice > 3) 
+            if (cin.fail() || choice < 1 || choice > 3) 
             {
                 cin.clear();
-                cin.ignore(10000, '\n');
+                cin.ignore(10000000000, '\n');
                 cout << "Invalid input. Try again.\n";
                 system("pause");
                 continue;
             }
 
             if (choice == 1)
-            {TakeOrder();}
+            {
+                break; // Return to item entry
+            }
 
-            if (choice == 2)
+            else if (choice == 2)
             {CancelItem();}
 
-            if (choice == 3)
+            else if (choice == 3)
             {
                 if (Orders.empty()) 
                 {
@@ -395,7 +422,6 @@ public:
                     continue;
                 }
                 PrintBill();
-                break;
             }
         }
     }
@@ -424,8 +450,6 @@ public:
     
     void CancelItem() 
     {
-        system("cls");
-
         DisplayCurrentOrder();
 
         if (Orders.empty()) 
@@ -436,24 +460,24 @@ public:
         }
 
         int CancelID;
-
         cout << "Enter O.N of item to remove (0 to cancel): ";
         cin >> CancelID;
 
-        if (CancelID == 0)
-        {ACC();}
+        if (CancelID == 0) 
+        {return;}
 
-        if (cin.fail() || CancelID < 1)
+        if (cin.fail() || CancelID < 1 || CancelID > Orders.size()) 
         {
             cin.clear();
-            cin.ignore(10000, '\n');
-            cout << "Invalid ID. Try again.\n";
+            cin.ignore(10000000000, '\n');
+            cout << "Invalid input. Try again.\n";
             system("pause");
             return;
         }
 
-        totalBill -= Orders[CancelID].getTotal();
-        Orders.erase(Orders.begin() + CancelID);
+        int index = CancelID - 1;
+        totalBill -= Orders[index].getTotal();
+        Orders.erase(Orders.begin() + index);
         cout << "Item removed successfully.\n";
         system("pause");
     }
@@ -474,7 +498,7 @@ public:
                  << "\t" << oi.quantity << "\t$" << fixed << setprecision(2) << oi.getTotal() << endl;
         }
 
-        cout << "====================================================ñ==============\n";
+        cout << "==================================================================\n";
         cout << "Total Bill: $" << totalBill << endl;
         cout << "==================================================================\n";
         cout << "Thank you for visiting Jing Breakfast!\n";
@@ -485,5 +509,5 @@ public:
 int main() 
 {
     RestaurantOrderingSystem app;
-    app.WelcomeCustomerAdmin();  // This handles everything inside
+    app.WelcomeCustomerAdmin();
 }
