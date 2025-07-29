@@ -18,7 +18,7 @@ public:
 class OrderItem 
 {
 public:
-    MenuItem item;  
+    MenuItem item;
     int quantity;
 
     OrderItem(MenuItem item, int quantity) : item(item), quantity(quantity) {}
@@ -406,9 +406,7 @@ public:
             }
 
             if (choice == 1)
-            {
-                break; // Return to item entry
-            }
+            {break;}
 
             else if (choice == 2)
             {CancelItem();}
